@@ -1,9 +1,9 @@
 import smtplib
 
-smtpUser = input("What is your email")
-smtpPass = input("What is your password")
+smtpUser = str(raw_input("What is your email"))
+smtpPass = str(raw_input("What is your password"))
 
-toAdd =input("what email do you want to send to")
+toAdd = str(raw_input("what email do you want to send to"))
 fromAdd = smtpUser
 
 subject = "Python Test"
@@ -19,6 +19,6 @@ s.starttls()
 s.ehlo
 
 s.login(smtpUser, smtpPass)
-s.sendmail(fromAdd, toAdd, header + "\n" + body)
+s.sendmail(fromAdd, toAdd, header + "\n\n" + body)
 
 s.quit()
