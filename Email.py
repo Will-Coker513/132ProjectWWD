@@ -19,6 +19,6 @@ s.starttls()
 s.ehlo
 
 s.login(smtpUser, smtpPass)
-s.sendmail(fromAdd, toAdd, header + "\n" + body)
+s.sendmail(fromAdd, toAdd, header + "\n\n" + body)
 
 s.quit()
