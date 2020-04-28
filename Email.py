@@ -1,9 +1,9 @@
 import smtplib
 
-smtpUser = str(input("What is your email"))
-smtpPass = str(input("What is your password"))
+smtpUser = str(raw_input("What is your email"))
+smtpPass = str(raw_input("What is your password"))
 
-toAdd = str(input("what email do you want to send to"))
+toAdd = str(raw_input("what email do you want to send to"))
 fromAdd = smtpUser
 
 subject = "Python Test"
