@@ -189,7 +189,6 @@ class MainGUI(Frame):
 
     def unlock(self):
         if(button == self.enter):
-            self.
             pass
 ####################### MAIN CODE ####################################
 
