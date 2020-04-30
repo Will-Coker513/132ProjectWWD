@@ -12,11 +12,12 @@ def Read():
 
         try: 
                 print("place tag")
-                id, text = reader.read()
-                print(id)
+                Id, text = reader.read()
+                print(Id)
                 print(text)
+                return Id
 
         except KeyboardInterrupt:
                 gpio.cleanup()
                 
-Read()
+
