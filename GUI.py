@@ -1,7 +1,9 @@
 from Tkinter import *
 
-def GUI():
-    
+unlocked = False
+
+def GUI(message):
+        
     class MainGUI(Frame):
         def __init__(self, parent, equalscounter = 0, clearcounter = 0, charactercount = 0):
             Frame.__init__(self, parent, bg = "white")
@@ -191,7 +193,14 @@ def GUI():
 
         def unlock(self):
             if(button == self.enter):
-                pass
+                if (self.display["text"] = message):
+                    self.process("AC")
+                    self.display["text"] = "Access Granted"
+                    unlocked = True 
+                else:
+                    self.process("AC")
+                    self.display["text"] = "Access Denied"
+                
     ####################### MAIN CODE ####################################
 
     #create the window
