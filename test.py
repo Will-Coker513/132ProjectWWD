@@ -8,6 +8,6 @@ cards = [35915910110]
 Id = Read()
 
 if (Id in cards):
-    random()
+    print random(4)
 else:
     print "Access Denied"
