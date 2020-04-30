@@ -1,5 +1,6 @@
+import smtplib
+
 def Email():
-    import smtplib
 
     smtpUser = str(raw_input("What is your email"))
     smtpPass = str(raw_input("What is your password"))

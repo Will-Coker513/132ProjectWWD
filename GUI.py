@@ -1,7 +1,7 @@
-
+from Tkinter import *
 
 def GUI():
-    from Tkinter import *
+    
     class MainGUI(Frame):
         def __init__(self, parent, equalscounter = 0, clearcounter = 0, charactercount = 0):
             Frame.__init__(self, parent, bg = "white")
