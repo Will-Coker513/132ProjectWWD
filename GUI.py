@@ -2,7 +2,7 @@ from Tkinter import *
 
 unlocked = False
 
-def GUI(message):
+def Gui(message):
         
     class MainGUI(Frame):
         def __init__(self, parent, equalscounter = 0, clearcounter = 0, charactercount = 0):
@@ -193,7 +193,7 @@ def GUI(message):
 
         def unlock(self):
             if(button == self.enter):
-                if (self.display["text"] = message):
+                if (self.display["text"] == message):
                     self.process("AC")
                     self.display["text"] = "Access Granted"
                     unlocked = True 

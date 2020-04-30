@@ -13,8 +13,8 @@ def Read():
         try: 
                 print("place tag")
                 Id, text = reader.read()
-                print(Id)
-                print(text)
+                # print(Id)
+                # print(text)
                 return Id
 
         except KeyboardInterrupt:

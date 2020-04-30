@@ -13,7 +13,7 @@ def Email(message):
     header = "To: " + toAdd + "\n" + "From: " + fromAdd + "\n" + "Subject: " + subject
     body = str(message)
 
-    print header + "\n" + body
+    # print header + "\n" + body
 
     s = smtplib.SMTP("smtp.gmail.com",587)
 
