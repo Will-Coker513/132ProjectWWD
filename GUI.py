@@ -1,7 +1,8 @@
 from Tkinter import *
 import RPi.GPIO as GPIO
+import Servo2
 
-unlocked = False
+
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -16,6 +17,7 @@ def Gui(message):
             parent.attributes("-fullscreen", True) 
             self.setUpGui()
 
+            self.unlocked = False
             # class variables to track equals, clears, and characters
             self.equalscounter = equalscounter  
             self.clearcounter = clearcounter 
@@ -198,13 +200,20 @@ def Gui(message):
                 self.charactercount -= 1
 
         def unlock(self):
+           # if (self.unlocked == True):
+               # self.display["text"] = "Locked"
+               # GPIO.output(17,False)
+               # self.unlocked = False
+               # Servo2.lock()
+               # GPIO.cleanup()
+                
             if (self.display["text"] == message):
                 self.process("AC")
                 self.display["text"] = "Granted"
-                unlocked = True
+                self.unlocked = True
                 GPIO.output(17,True)
-                GPIO.cleanup()
-                quit()
+                Servo2.unlock()
+                
             else:
                 self.process("AC")
                 self.display["text"] = "Denied"
