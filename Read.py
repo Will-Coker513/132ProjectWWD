@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
 def Read():
-        GPIO.setwarnings(False)
+        
         import RPi.GPIO as gpio
         import sys
         from mfrc522 import SimpleMFRC522
 
+        gpio.setwarnings(False)
         gpio.setmode(gpio.BCM)
 
         reader = SimpleMFRC522()

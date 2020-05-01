@@ -7,7 +7,7 @@ def Gui(message):
     class MainGUI(Frame):
         def __init__(self, parent, equalscounter = 0, clearcounter = 0, charactercount = 0):
             Frame.__init__(self, parent, bg = "white")
-            parent.attributes() # ("-fullscreen", True) temporarily disabled 
+            parent.attributes("-fullscreen", True) 
             self.setUpGui()
 
             # class variables to track equals, clears, and characters
@@ -120,7 +120,7 @@ def Gui(message):
             button.grid(row = 4, column = 1, sticky = N+E+W+S)
 
             #backspace
-            img = PhotoImage(file = "Keypad/images/Backspace.gif")
+            img = PhotoImage(file = "Keypad/images/bak.gif")
             button = Button(self, bg = "white", image = img, borderwidth = 0, highlightthickness = 0,\
                             activebackground = "white",\
                             command = lambda : self.backspace())
@@ -128,7 +128,7 @@ def Gui(message):
             button.grid(row = 4, column = 0, sticky = N+E+W+S)
 
             #Enter
-            img = PhotoImage(file = "Keypad/images/Enter.gif")
+            img = PhotoImage(file = "Keypad/images/eql.gif")
             button = Button(self, bg = "white", image = img, borderwidth = 0, highlightthickness = 0,\
                             activebackground = "white",\
                             command = lambda : self.enter())
@@ -192,14 +192,13 @@ def Gui(message):
                 self.charactercount -= 1
 
         def unlock(self):
-            if(button == self.enter):
-                if (self.display["text"] == message):
-                    self.process("AC")
-                    self.display["text"] = "Access Granted"
-                    unlocked = True 
-                else:
-                    self.process("AC")
-                    self.display["text"] = "Access Denied"
+            if (self.display["text"] == message):
+                self.process("AC")
+                self.display["text"] = "Granted"
+                unlocked = True 
+            else:
+                self.process("AC")
+                self.display["text"] = "Denied"
                 
     ####################### MAIN CODE ####################################
 
