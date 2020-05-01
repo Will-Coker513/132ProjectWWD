@@ -1,6 +1,12 @@
 from Tkinter import *
+import RPi.GPIO as GPIO
 
 unlocked = False
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(17, GPIO.OUT)
+GPIO.output(17, False)
 
 def Gui(message):
         
@@ -131,7 +137,7 @@ def Gui(message):
             img = PhotoImage(file = "Keypad/images/eql.gif")
             button = Button(self, bg = "white", image = img, borderwidth = 0, highlightthickness = 0,\
                             activebackground = "white",\
-                            command = lambda : self.enter())
+                            command = lambda : self.unlock())
             button.image = img
             button.grid(row = 4, column = 2, sticky = N+E+W+S)
 
@@ -195,10 +201,15 @@ def Gui(message):
             if (self.display["text"] == message):
                 self.process("AC")
                 self.display["text"] = "Granted"
-                unlocked = True 
+                unlocked = True
+                GPIO.output(17,True)
+                GPIO.cleanup()
+                quit()
             else:
                 self.process("AC")
                 self.display["text"] = "Denied"
+                GPIO.cleanup()
+                quit()
                 
     ####################### MAIN CODE ####################################
 
