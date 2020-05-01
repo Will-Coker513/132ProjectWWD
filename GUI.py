@@ -207,7 +207,7 @@ def Gui(message):
                # Servo2.lock()
                # GPIO.cleanup()
                 
-            if (self.display["text"] == message):
+            if (self.display["text"] == str(message)):
                 self.process("AC")
                 self.display["text"] = "Granted"
                 self.unlocked = True
