@@ -10,10 +10,16 @@ GPIO.setup(17, GPIO.OUT)
 GPIO.output(17, False)
 
 def Gui(message):
-
-    class FirstGUI(Frame):
+    class MainGUI(Frame):
         def __init__(self, parent, equalscounter = 0, clearcounter = 0, charactercount = 0):
             Frame.__init__(self, parent, bg = "white")
+        def show(self):
+            self.lift()
+        
+
+    class FirstGUI(MainGUI):
+        def __init__(self, parent, equalscounter = 0, clearcounter = 0, charactercount = 0):
+            MainGUI.__init__(self, parent, bg = "white")
             parent.attributes("-fullscreen", True) 
             self.setUpGui()
 
@@ -71,9 +77,9 @@ def Gui(message):
 
     window.mainloop()
         
-    class SecondGUI(Frame):
+    class SecondGUI(MainGUI):
         def __init__(self, parent, equalscounter = 0, clearcounter = 0, charactercount = 0):
-            Frame.__init__(self, parent, bg = "white")
+            MainGUI.__init__(self, parent, bg = "white")
             parent.attributes("-fullscreen", True) 
             self.setUpGui()
 
@@ -293,3 +299,36 @@ def Gui(message):
 
     #display and wait for user interaction
     window.mainloop()
+
+    class MainView(Frame):
+        def __init__(self, parent, equalscounter = 0, clearcounter = 0, charactercount = 0):
+            Frame.__init__(self, parent, bg = "white")
+            Title_Screen = FirstGUI(self)
+            Keypad = SecondGUI(self)
+
+            buttonframe = Frame(self)
+            container = Frame(self)
+            buttonframe.pack(side="top", fill="x", expand=False)
+            container.pack(side="top", fill"both", expand=True)
+
+            Title_Screen.place(in_container, x=0, y=0, relwidth=1, relheight=1)
+            Keypad.place(in_container, x=0, y=0, relwidth=1, relheight=1)
+
+            b1 = Button(buttonframe, text="Title Screen", command=Title_Screen.lift)
+            b2 = Button(buttonframe, text="Title Screen", command=Keypad.lift)
+
+            b1.pack(side="left")
+            b2.pack(side="left")
+
+            Title_Screen.show()
+
+        if __name__ == "__main__":
+            root = Tk()
+            main = MainView(root)
+            main.pack(side="top", fill="both", expand=True)
+            root.wm_geometry("400x400")
+            root.mainloop()
+
+
+
+            
