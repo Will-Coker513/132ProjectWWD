@@ -64,7 +64,7 @@ def Gui(message):
             img = PhotoImage(file = "Keypad/images/Unlock.gif")
             button = Button(self, bg = "white", image = img, borderwidth = 0, highlightthickness = 0,\
                                 activebackground = "white",\
-                                command = lambda : self.process())
+                                command = lambda : self.process(Keypad.lift))
             button.image = img
             button.grid(row = 4, column = 2, sticky = N+E+W+S)
 
