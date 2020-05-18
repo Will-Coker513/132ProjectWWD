@@ -45,18 +45,14 @@ def Gui(message):
 
             ###############Buttons################
             #Welcome!
-            img = PhotoImage(file = "Keypad/images/Welcome.gif")
-            button = Button(self, bg = "white", image = img, borderwidth = 0, highlightthickness = 0,\
-                            activebackground = "white",\
-                                command = lambda : self.process())
-            button.image = img
-            button.grid(row = 3, column = 1, sticky = N+E+W+S)
+            img = Image.PhotoImage(file = "Keypad/images/Welcome.gif")
+            image = Image(row = 4, column = 1)
         
             #New User
             img = PhotoImage(file = "Keypad/images/NewUser.gif")
             button = Button(self, bg = "white", image = img, borderwidth = 0, highlightthickness = 0,\
                                 activebackground = "white",\
-                                command = lambda : self.process())
+                                command = lambda : self.newUser())
             button.image = img
             button.grid(row = 4, column = 0, sticky = N+E+W+S)
 
@@ -64,7 +60,7 @@ def Gui(message):
             img = PhotoImage(file = "Keypad/images/Unlock.gif")
             button = Button(self, bg = "white", image = img, borderwidth = 0, highlightthickness = 0,\
                                 activebackground = "white",\
-                                command = lambda : self.process(Keypad.lift))
+                                command = lambda : self.unlock)
             button.image = img
             button.grid(row = 4, column = 2, sticky = N+E+W+S)
 
@@ -76,7 +72,9 @@ def Gui(message):
     p = FirstGUI(window)
 
     window.mainloop()
-        
+
+    ############################################
+    
     class SecondGUI(MainGUI):
         def __init__(self, parent, equalscounter = 0, clearcounter = 0, charactercount = 0):
             MainGUI.__init__(self, parent, bg = "white")
