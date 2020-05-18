@@ -56,10 +56,10 @@ class ThirdGUI(Frame):
 ##################Window##################
 window = Tk()
 
-app = App(window)
+app = ThirdGUI(window)
 
 window.title("Keypad")
 
-p = FirstGUI(window)
+p = ThirdGUI(window)
 
 window.mainloop()

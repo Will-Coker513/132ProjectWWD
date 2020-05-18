@@ -1,85 +1,206 @@
+######################################################################
+# Name: Will Coker, Dylan Weaver, William Caverlee
+# Date: 5/18/2020
+# Description: Lockbox code using RFID, random, GUI, servo, and email
+######################################################################
+
+# title
+# new user - write - submit
+# title - unlock - read - random - email 
+# keypad - Servo
+
 from Tkinter import *
 import RPi.GPIO as GPIO
-import Servo2
+from mfrc522 import SimpleMFRC522
+import sys
+import smtplib
+import time
+from random import randint
 
-
-
-GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(17, GPIO.OUT)
-GPIO.output(17, False)
+GPIO.setup(12, GPIO.OUT)
 
-def Gui(message):
-    class MainGUI(Frame):
-        def __init__(self, parent, equalscounter = 0, clearcounter = 0, charactercount = 0):
-            Frame.__init__(self, parent, bg = "white")
-        def show(self):
-            self.lift()
+GPIO.output(17,False)
+GPIO.output(12,False)
+
+class Title(Frame):
+    def __init__(self, parent):
+        Frame.__init__(self, parent, bg = "white")
+        parent.attributes("-fullscreen", True) 
+        self.setUpGui()
+
         
-
-    class FirstGUI(MainGUI):
-        def __init__(self, parent, equalscounter = 0, clearcounter = 0, charactercount = 0):
-            MainGUI.__init__(self, parent, bg = "white")
-            parent.attributes("-fullscreen", True) 
-            self.setUpGui()
-
-            self.unlocked = False
-            # class variables to track equals, clears, and characters
-            self.equalscounter = equalscounter  
-            self.clearcounter = clearcounter 
-            self.charactercount = charactercount
-    
-        def setUpGui(self):
-            self.display = Label(self, text = "", anchor = E, bg = "white",\
+        
+    def setUpGui(self):
+        self.display = Label(self, text = "", anchor = E, bg = "white",\
                                 height = 1, width = 15, font = ("TexGyreAdventor", 45))
             
-            self.display.grid(row = 0, column = 0, columnspan = 4,\
+        self.display.grid(row = 0, column = 0, columnspan = 4,\
                               sticky = N+E+W+S)
 
-            self.pack(fill = BOTH, expand = 1)
+        self.pack(fill = BOTH, expand = 1)
 
-            for row in range(5):
-                Grid.rowconfigure(self, row, weight = 1)
-            for col in range(2):
-                Grid.rowconfigure(self, col, weight = 1)
+        for row in range(5):
+            Grid.rowconfigure(self, row, weight = 1)
+        for col in range(2):
+            Grid.rowconfigure(self, col, weight = 1)
 
-            ###############Buttons################
-            #Welcome!
-            img = PhotoImage(file = "Keypad/images/Welcome.gif")
-            button = Button(self, bg = "white", image = img, borderwidth = 0, highlightthickness = 0,\
+        ###############Buttons################
+        #Welcome!
+        img = PhotoImage(file = "Keypad/images/Welcome.gif")
+        button = Button(self, bg = "white", image = img, borderwidth = 0, highlightthickness = 0,\
                             activebackground = "white",\
-                                command = lambda : self.process())
-            button.image = img
-            button.grid(row = 3, column = 1, sticky = N+E+W+S)
+                            command = lambda : None 
+        button.image = img
+        button.grid(row = 33, column = 1, sticky = N+E+W+S)
         
-            #New User
-            img = PhotoImage(file = "Keypad/images/NewUser.gif")
-            button = Button(self, bg = "white", image = img, borderwidth = 0, highlightthickness = 0,\
-                                activebackground = "white",\
-                                command = lambda : self.process())
-            button.image = img
-            button.grid(row = 4, column = 0, sticky = N+E+W+S)
+        #New User
+        img = PhotoImage(file = "Keypad/images/NewUser.gif")
+        button = Button(self, bg = "white", image = img, borderwidth = 0, highlightthickness = 0,\
+                            activebackground = "white",\
+                            command = lambda :  StartSubmit())
+        button.image = img
+        button.grid(row = 4, column = 0, sticky = N+E+W+S)
 
-            #Unlock
-            img = PhotoImage(file = "Keypad/images/Unlock.gif")
-            button = Button(self, bg = "white", image = img, borderwidth = 0, highlightthickness = 0,\
-                                activebackground = "white",\
-                                command = lambda : self.process(Keypad.lift))
-            button.image = img
-            button.grid(row = 4, column = 2, sticky = N+E+W+S)
+        #Unlock
+        img = PhotoImage(file = "Keypad/images/Unlock.gif")
+        button = Button(self, bg = "white", image = img, borderwidth = 0, highlightthickness = 0,\
+                            activebackground = "white",\
+                            command = lambda : Start())
+        button.image = img
+        button.grid(row = 4, column = 2, sticky = N+E+W+S)
+        return 
 
-    ##################Window##################
-    window = Tk()
+def StartTitle():
+    TitleScreen = Tk()
 
-    window.title("Keypad")
+    TitleScreen.title("Keypad")
 
-    p = FirstGUI(window)
+    t = Title(TitleScreen)
 
-    window.mainloop()
+    TitleScreen.mainloop()
+
+######################## END TITLE SETUP ##############################################################
+
+######################## BEGIN SUBMIT/NEW USER SETUP #################################################
+
+class SubmitButton(Frame):
+    def __init__(self, master):
+        Frame.__init__(self,master)
         
-    class SecondGUI(MainGUI):
-        def __init__(self, parent, equalscounter = 0, clearcounter = 0, charactercount = 0):
-            MainGUI.__init__(self, parent, bg = "white")
+        self.label = Label(master, text = "Enter email")
+        self.label.pack(side = LEFT)
+        self.entry = Entry(master)
+        self.entry.pack(side = LEFT)
+        self.button1 = Button(master, text = "Submit",command = self.Submit())
+        self.button1.pack(side = LEFT)
+        
+        def setUpGui(self):
+        self.display = Label(self, text = "", anchor = E, bg = "white",\
+                                height = 1, width = 15, font = ("TexGyreAdventor", 45))
+            
+        self.display.grid(row = 0, column = 0, columnspan = 4,\
+                              sticky = N+E+W+S)
+
+        self.pack(fill = BOTH, expand = 1)
+
+        for row in range(5):
+            Grid.rowconfigure(self, row, weight = 1)
+        for col in range(2):
+            Grid.rowconfigure(self, col, weight = 1)
+
+        self.display["text"] = "Place tag"
+        textInput = self.entry.get()
+        Write(textInput)
+        self.display["text"] = "written"
+
+    def Submit(self):
+        Id, text = Read()
+        self.display["text"] = "Place tag"
+        cards.append(Id)
+        s.withdraw()
+        t.lift()
+
+def StartSubmit():
+    SubmitScreen = Tk()
+    S = SubmitButton(SubmitScreen)
+    SubmitScreen.mainloop()
+
+######################### END SUBMIT SETUP ############################################################
+
+######################### WRITE FUNCTION ##############################################################
+
+def Write(placeholder):
+    writer = SimpleMFRC522()
+
+    try:
+            text = str(placeholder)
+            
+            writer.write(text)
+            
+
+    except KeyboardInterrupt:
+            GPIO.cleanup()
+
+########################## END WRITE FUNCTION ##########################################################
+
+########################## READ FUNCTION ###############################################################
+
+def Read():
+        reader = SimpleMFRC522()
+
+        try:
+                Id, text = reader.read()
+                return Id, text
+
+        except KeyboardInterrupt:
+                GPIO.cleanup()
+                        
+########################## RANDOM FUNCTION #############################################################
+
+def random(n):
+    start = 10**(n-1)
+    end = (10**n)-1
+    return randint(start, end)
+
+########################## END RANDOM FUNCTION #########################################################
+
+########################## EMAIL FUNCTION ##############################################################
+
+def Email(message, text):
+
+    smtpUser = "132raspberrypi@gmail.com"
+    smtpPass = "Wc132Rpi8"
+
+    toAdd = str(text)
+    fromAdd = smtpUser
+
+    subject = "Randomly Generated Code for Lock"
+    header = "To: " + toAdd + "\n" + "From: " + fromAdd + "\n" + "Subject: " + subject
+    body = str(message)
+
+    # print header + "\n" + body
+
+    s = smtplib.SMTP("smtp.gmail.com",587)
+
+    s.ehlo()
+    s.starttls()
+
+    s.login(smtpUser, smtpPass)
+    s.sendmail(fromAdd, toAdd, header + "\n\n" + body)
+
+    s.quit()
+    return 
+
+########################## END EMAIL ###################################################################
+
+########################## BEGIN KEYPAD GUI SETUP ######################################################
+
+class Keypad(Title):
+        def __init__(self, parent):
+            Title.__init__(self, parent, bg = "white")
             parent.attributes("-fullscreen", True) 
             self.setUpGui()
 
@@ -204,12 +325,7 @@ def Gui(message):
                             activebackground = "white",\
                             command = lambda : self.unlock())
             button.image = img
-            button.grid(row = 4, column = 2, sticky = N+E+W+S)
-
-            
-
-
-            
+            button.grid(row = 4, column = 2, sticky = N+E+W+S) 
 
         ##################################################################
         def process(self, button):
@@ -275,57 +391,66 @@ def Gui(message):
                 self.display["text"] = "Granted"
                 self.unlocked = True
                 GPIO.output(17,True)
-                Servo2.unlock()
+                Unlock()
                 
             else:
                 self.process("AC")
                 self.display["text"] = "Denied"
                 GPIO.cleanup()
                 quit()
-                
-    ####################### MAIN CODE ####################################
 
+def StartKeypad():
     #create the window
-    window = Tk()
+    keypad = Tk()
 
     #set the window title
-    window.title("Keypad")
+    keypad.title("Keypad")
 
     #generate the window
-    p = SecondGUI(window)
+    k = Keypad(keypad)
 
     #display and wait for user interaction
-    window.mainloop()
+    keypad.mainloop()
 
-    class MainView(Frame):
-        def __init__(self, parent, equalscounter = 0, clearcounter = 0, charactercount = 0):
-            Frame.__init__(self, parent, bg = "white")
-            Title_Screen = FirstGUI(self)
-            Keypad = SecondGUI(self)
+############################# END KEYPAD SETUP ###########################################################
+                    
+############################# SERVO FUNCTIONS ############################################################
 
-            buttonframe = Frame(self)
-            container = Frame(self)
-            buttonframe.pack(side="top", fill="x", expand=False)
-            container.pack(side="top", fill="both", expand=True)
+servo = GPIO.PWN(12, 50)
 
-            Title_Screen.place(in_container, x=0, y=0, relwidth=1, relheight=1)
-            Keypad.place(in_container, x=0, y=0, relwidth=1, relheight=1)
+def Unlock():
+    servo.start(2)
+    time.sleep(.5)
+    servo.stop()
 
-            b1 = Button(buttonframe, text="Title Screen", command=Title_Screen.lift)
-            b2 = Button(buttonframe, text="Title Screen", command=Keypad.lift)
-
-            b1.pack(side="left")
-            b2.pack(side="left")
-
-            Title_Screen.show()
-
-        if __name__ == "__main__":
-            root = Tk()
-            main = MainView(root)
-            main.pack(side="top", fill="both", expand=True)
-            root.wm_geometry("400x400")
-            root.mainloop()
+def Lock():
+    servo.start(8)
+    time.sleep(.5)
+    servo.stop()
 
 
+############################## END SERVO FUNCTIONS #######################################################
 
-            
+############################## OTHER FUNCTIONS ###########################################################
+
+def Start():
+    
+    StartKeypad()
+    k.display["text"] = "Place tag"
+    Id, text = Read()
+    if (Id in cards):
+        message = random(randint(0,9))
+        Email(message, s.textInput)
+    else:
+        k.display["text"] = "Denied"
+        quit()
+
+############################## BEGIN MAIN CODE ###########################################################
+
+cards =[35915910110]
+
+
+StartTitle()
+Start() 
+
+                        
